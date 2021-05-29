@@ -1,7 +1,13 @@
 import cv2
 from numpy import *
+from tkinter import *
+from tkinter import filedialog
+import PIL
 
-imageOrg = cv2.imread("yo.png")
+path=filedialog.askopenfilename(filetypes=[("Image File",'.jpg')])
+
+
+imageOrg = cv2.imread(path)
 image = cv2.resize(imageOrg,(0,0),fx=0.25,fy=0.25)
 
 imggrey = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
