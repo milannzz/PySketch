@@ -1,5 +1,7 @@
 # Pencil-Sketch-Using-Python
 
+Simple python program to convert your images into pencil sketeches.
+
 Samples -
 
 ![](https://github.com/milannzz/Pencil-Sketch-Using-Python/blob/master/output/output1.jpg)
