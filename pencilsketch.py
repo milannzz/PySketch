@@ -4,7 +4,7 @@ from tkinter import *
 from tkinter import filedialog
 import PIL
 
-path=filedialog.askopenfilename(filetypes=[("Image File",'.jpg')])
+path=filedialog.askopenfilename(filetypes=[("Image File",'.*')])
 
 
 imageOrg = cv2.imread(path)
@@ -42,8 +42,6 @@ y = (maxIntensity/phi)*(x/(maxIntensity/theta))**0.5
 # bright pixels become slightly dark 
 image = (maxIntensity/phi)*(image/(maxIntensity/theta))**2
 image = array(image,dtype=uint8)
-
-cv2.imshow("hello",imageOrg)
 
 cv2.imshow("hello",image)
 cv2.waitKey(0)
