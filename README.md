@@ -8,7 +8,7 @@ Samples -
 
 ![](https://github.com/milannzz/Pencil-Sketch-Using-Python/blob/master/Images/iaf.jpg) ![](https://github.com/milannzz/Pencil-Sketch-Using-Python/blob/master/output/output2.jpg)
 
-![](https://github.com/milannzz/Pencil-Sketch-Using-Python/blob/master/output/output3.jpg)
+![](https://github.com/milannzz/Pencil-Sketch-Using-Python/blob/master/Images/pk.jpg) ![](https://github.com/milannzz/Pencil-Sketch-Using-Python/blob/master/output/output3.jpg)
 
 ![](https://github.com/milannzz/Pencil-Sketch-Using-Python/blob/master/output/output4.jpg)
 
