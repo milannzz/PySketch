@@ -1,4 +1,4 @@
-# Pencil-Sketch-Using-Python
+# PySketch
 
 Simple python program to convert your images into pencil sketeches.
 
