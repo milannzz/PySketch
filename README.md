@@ -1,5 +1,10 @@
 # PySketch - A simple tool to turn your images into pencil sketch.
 
+**Technology Used-**
+1. Python
+2. OpenCV
+3. Pillow
+
 Samples -
 
 ![](https://github.com/milannzz/Pencil-Sketch-Using-Python/blob/master/Images/aa.jpg)
