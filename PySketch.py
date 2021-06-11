@@ -4,6 +4,10 @@ from tkinter import *
 from tkinter import filedialog
 from PIL import ImageTk, Image
 
+# Clearer Ui using ctypes
+import ctypes
+ctypes.windll.shcore.SetProcessDpiAwareness(1)
+
 mainWindow = Tk()
 mainWindow.title("PySketch")
 mainWindow.geometry("1366x768")
@@ -12,6 +16,7 @@ mainWindow.resizable(width = True, height = True)
 
 def open():
     global path
+    global image
     path=filedialog.askopenfilename(filetypes=[("Image File",('.jpg',".png"))])
     if path == None:
         return
@@ -48,22 +53,33 @@ def open():
     # Decrease intensity such that
     # dark pixels become much darker, 
     # bright pixels become slightly dark 
-    image = (maxIntensity/phi)*(image/(maxIntensity/theta))**2
+    image = (maxIntensity/phi)*(image/(maxIntensity/theta))**1.5
     image = array(image,dtype=uint8)
 
     white = [255,255,255]
     dark = [25,25,25]
     image = cv2.copyMakeBorder(image,5,5,5,5,cv2.BORDER_CONSTANT,value=dark)
 
-    image = Image.fromarray(image)
-    image = ImageTk.PhotoImage(image)
+    image4tk = Image.fromarray(image)
+    image4tk = ImageTk.PhotoImage(image4tk)
 
-    label = Label(mainWindow ,image=image)
-    label.image = image
+    cv2.imwrite(path,image)
+
+    label = Label(mainWindow ,image=image4tk,padx=10,pady=10)
+    label.image = image4tk
     label.pack()
+
+def saveImages():
+    global image
+    path=filedialog.askopenfilename(filetypes=[("Image File",('.jpg',".png"))])
+    cv2.imwrite(path,image)
+
 
 
 buttonOpen = Button(mainWindow,text="Open Images",command=open)
+buttonOpen.pack()
+
+buttonSave = Button(mainWindow,text="save Images",command=saveImages)
 buttonOpen.pack()
 
 mainWindow.mainloop() # Start the GUI
