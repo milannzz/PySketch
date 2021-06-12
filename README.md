@@ -10,6 +10,8 @@ So, here we are using what i can to achive what i can't  :)
 
 Samples -
 
+![](https://github.com/milannzz/PySketch/blob/master/Images/asd.jpg)
+
 ![](https://github.com/milannzz/Pencil-Sketch-Using-Python/blob/master/Images/aa.jpg)
 ![](https://github.com/milannzz/Pencil-Sketch-Using-Python/blob/master/output/output1.jpg)
 
