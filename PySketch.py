@@ -12,16 +12,18 @@ mainWindow = Tk()
 mainWindow.title("PySketch")
 mainWindow.geometry("1366x768")
 mainWindow.resizable(width = True, height = True)
+mainWindow.grid_columnconfigure(0, weight = 1)
 
 
 def open():
     global path
     global image
+
     path=filedialog.askopenfilename(filetypes=[("Image File",('.jpg',".png"))])
     if path == None:
         return
     imageOrg = cv2.imread(path)
-    image = cv2.resize(imageOrg,(0,0),fx=(720/imageOrg.shape[0]),fy=(720/imageOrg.shape[0]))
+    image = cv2.resize(imageOrg,(0,0),fx=(670/imageOrg.shape[0]),fy=(670/imageOrg.shape[0]))
 
     imggrey = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
@@ -63,23 +65,27 @@ def open():
     image4tk = Image.fromarray(image)
     image4tk = ImageTk.PhotoImage(image4tk)
 
-    cv2.imwrite(path,image)
-
-    label = Label(mainWindow ,image=image4tk,padx=10,pady=10)
+    label = Label(mainWindow ,image=image4tk,padx=10,pady=5)
+    label.image = None
     label.image = image4tk
-    label.pack()
+    label.grid(row=1,column=0,padx=10,pady=5)
 
-def saveImages():
+def saveImage():
     global image
-    path=filedialog.askopenfilename(filetypes=[("Image File",('.jpg',".png"))])
+    path = filedialog.asksaveasfilename(initialfile = 'Untitled.jpg',filetypes=[("Image File",('.jpg',".png"))])
+    if path == None:
+        return
     cv2.imwrite(path,image)
 
+frame = Frame(mainWindow)
+frame.grid(row=0,column=0,padx=10,pady=5)
+frame.grid_columnconfigure(0, weight = 1)
 
+buttonOpen = Button(frame,text="Open Image",command=open,width=20,font="bold")
+buttonOpen.grid(row=0,column=0,padx=10,pady=5)
 
-buttonOpen = Button(mainWindow,text="Open Images",command=open)
-buttonOpen.pack()
+buttonSave = Button(frame,text="Save Image",command=saveImage,width=20,font="bold")
+buttonSave.grid(row=0,column=1,padx=10,pady=5)
 
-buttonSave = Button(mainWindow,text="save Images",command=saveImages)
-buttonOpen.pack()
-
-mainWindow.mainloop() # Start the GUI
+# Start the GUI
+mainWindow.mainloop()
