@@ -14,12 +14,19 @@ mainWindow.geometry("1366x768")
 mainWindow.resizable(width = True, height = True)
 mainWindow.grid_columnconfigure(0, weight = 1)
 
-
 def open():
+    global path
+    path=filedialog.askopenfilename(filetypes=[("Image File",('.jpg',".png"))])
+
+    imageOrg = cv2.imread(path)
+    image = cv2.resize(imageOrg,(0,0),fx=(670/imageOrg.shape[0]),fy=(670/imageOrg.shape[0]))
+
+    cv2.imshow("image",image)
+
+def convert():
     global path
     global image
 
-    path=filedialog.askopenfilename(filetypes=[("Image File",('.jpg',".png"))])
     if path == None:
         return
     imageOrg = cv2.imread(path)
@@ -66,7 +73,6 @@ def open():
     image4tk = ImageTk.PhotoImage(image4tk)
 
     label = Label(mainWindow ,image=image4tk,padx=10,pady=5)
-    label.image = None
     label.image = image4tk
     label.grid(row=1,column=0,padx=10,pady=5)
 
@@ -81,11 +87,14 @@ frame = Frame(mainWindow)
 frame.grid(row=0,column=0,padx=10,pady=5)
 frame.grid_columnconfigure(0, weight = 1)
 
-buttonOpen = Button(frame,text="Open Image",command=open,width=20,font="bold")
+buttonOpen = Button(frame,text="Open Image",command=open,width=15,font="bold")
 buttonOpen.grid(row=0,column=0,padx=10,pady=5)
 
-buttonSave = Button(frame,text="Save Image",command=saveImage,width=20,font="bold")
-buttonSave.grid(row=0,column=1,padx=10,pady=5)
+buttonConvert = Button(frame,text="Convert",command=convert,width=15,font="bold",fg="GREEN")
+buttonConvert.grid(row=0,column=1,padx=10,pady=5)
+
+buttonSave = Button(frame,text="Save Image",command=saveImage,width=15,font="bold")
+buttonSave.grid(row=0,column=2,padx=10,pady=5)
 
 # Start the GUI
 mainWindow.mainloop()
