@@ -1,6 +1,6 @@
 import cv2
 from numpy import *
-from tkinter import *
+from tkinter import * 
 from tkinter import filedialog
 from PIL import ImageTk, Image
 
@@ -83,18 +83,29 @@ def saveImage():
         return
     cv2.imwrite(path,image)
 
-frame = Frame(mainWindow)
+frame = Frame(mainWindow,bg="WHITE")
 frame.grid(row=0,column=0,padx=10,pady=5)
 frame.grid_columnconfigure(0, weight = 1)
 
-buttonOpen = Button(frame,text="Open Image",command=open,width=15,font="bold")
+buttonOpen = Button(frame,text="Open Image",command=open,width=15,font="bold 10")
 buttonOpen.grid(row=0,column=0,padx=10,pady=5)
 
-buttonConvert = Button(frame,text="Convert",command=convert,width=15,font="bold",fg="GREEN")
+buttonConvert = Button(frame,text="Convert",command=convert,width=15,font="bold 10",fg="GREEN")
 buttonConvert.grid(row=0,column=1,padx=10,pady=5)
 
-buttonSave = Button(frame,text="Save Image",command=saveImage,width=15,font="bold")
+buttonSave = Button(frame,text="Save Image",command=saveImage,width=15,font="bold 10")
 buttonSave.grid(row=0,column=2,padx=10,pady=5)
+
+quality = IntVar()
+
+qframe = Frame(frame)
+qframe.grid(row=0,column=3)
+qframe.grid_columnconfigure(0, weight = 1)
+
+qualityScale = Scale(qframe,variable=quality,from_=1,to= 100,orient=HORIZONTAL)
+qualityScale.grid(row=0,column=0,padx=10,pady=5)
+
+Label(qframe, text = "Quality",font="bold 10").grid(row=1,column=0)
 
 # Start the GUI
 mainWindow.mainloop()
