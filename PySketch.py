@@ -1,7 +1,7 @@
 import cv2
 from numpy import *
-from tkinter import * 
-from tkinter import filedialog
+from tkinter import *
+from tkinter import filedialog,PhotoImage 
 from PIL import ImageTk, Image
 
 # Clearer Ui using ctypes
@@ -19,9 +19,15 @@ def open():
     path=filedialog.askopenfilename(filetypes=[("Image File",('.jpg',".png"))])
 
     imageOrg = cv2.imread(path)
-    image = cv2.resize(imageOrg,(0,0),fx=(670/imageOrg.shape[0]),fy=(670/imageOrg.shape[0]))
+    image = cv2.resize(imageOrg,(0,0),fx=(640/imageOrg.shape[0]),fy=(640/imageOrg.shape[0]),interpolation=cv2.INTER_AREA)
 
-    cv2.imshow("image",image)
+    image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+
+    photo = ImageTk.PhotoImage(image = Image.fromarray(image))
+
+    label = Label(mainWindow,image=photo)
+    label.image = photo
+    label.grid(row=1,column=0)
 
 def convert():
     global path
@@ -30,7 +36,7 @@ def convert():
     if path == None:
         return
     imageOrg = cv2.imread(path)
-    image = cv2.resize(imageOrg,(0,0),fx=(670/imageOrg.shape[0]),fy=(670/imageOrg.shape[0]))
+    image = cv2.resize(imageOrg,(0,0),fx=(640/imageOrg.shape[0]),fy=(640/imageOrg.shape[0]))
 
     imggrey = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
@@ -83,7 +89,7 @@ def saveImage():
         return
     cv2.imwrite(path,image)
 
-frame = Frame(mainWindow,bg="WHITE")
+frame = Frame(mainWindow)
 frame.grid(row=0,column=0,padx=10,pady=5)
 frame.grid_columnconfigure(0, weight = 1)
 
@@ -103,9 +109,9 @@ qframe.grid(row=0,column=3)
 qframe.grid_columnconfigure(0, weight = 1)
 
 qualityScale = Scale(qframe,variable=quality,from_=1,to= 100,orient=HORIZONTAL)
+qualityScale.set(50)
 qualityScale.grid(row=0,column=0,padx=10,pady=5)
 
-Label(qframe, text = "Quality",font="bold 10").grid(row=1,column=0)
+Label(qframe, text = "Quality",font="bold 10").grid(row=1,column=0,padx=10,pady=5)
 
-# Start the GUI
 mainWindow.mainloop()
