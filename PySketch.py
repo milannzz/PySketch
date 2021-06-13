@@ -1,22 +1,42 @@
 import cv2
 from numpy import *
-from tkinter import *
-from tkinter import filedialog
+from tkinter import Label,Frame,Tk,Button,IntVar,Scale,HORIZONTAL
+from tkinter import filedialog,PhotoImage 
 from PIL import ImageTk, Image
+
+# Clearer Ui using ctypes
+import ctypes
+ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
 mainWindow = Tk()
 mainWindow.title("PySketch")
 mainWindow.geometry("1366x768")
 mainWindow.resizable(width = True, height = True)
-
+mainWindow.grid_columnconfigure(0, weight = 1)
 
 def open():
     global path
     path=filedialog.askopenfilename(filetypes=[("Image File",('.jpg',".png"))])
+
+    imageOrg = cv2.imread(path)
+    image = cv2.resize(imageOrg,(0,0),fx=(640/imageOrg.shape[0]),fy=(640/imageOrg.shape[0]),interpolation=cv2.INTER_AREA)
+
+    image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+
+    photo = ImageTk.PhotoImage(image = Image.fromarray(image))
+
+    label = Label(mainWindow,image=photo)
+    label.image = photo
+    label.grid(row=1,column=0)
+
+def convert():
+    global path
+    global image
+
     if path == None:
         return
     imageOrg = cv2.imread(path)
-    image = cv2.resize(imageOrg,(0,0),fx=(720/imageOrg.shape[0]),fy=(720/imageOrg.shape[0]))
+    image = cv2.resize(imageOrg,(0,0),fx=(640/imageOrg.shape[0]),fy=(640/imageOrg.shape[0]))
 
     imggrey = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
@@ -48,7 +68,7 @@ def open():
     # Decrease intensity such that
     # dark pixels become much darker, 
     # bright pixels become slightly dark 
-    image = (maxIntensity/phi)*(image/(maxIntensity/theta))**2
+    image = (maxIntensity/phi)*(image/(maxIntensity/theta))**1.5
     image = array(image,dtype=uint8)
 
     white = [255,255,255]
@@ -58,14 +78,40 @@ def open():
     image4tk = Image.fromarray(image)
     image4tk = ImageTk.PhotoImage(image4tk)
 
-    cv2.imwrite("output.jpg",image)
-
-    label = Label(mainWindow ,image=image4tk)
+    label = Label(mainWindow ,image=image4tk,padx=10,pady=5)
     label.image = image4tk
-    label.pack()
+    label.grid(row=1,column=0,padx=10,pady=5)
 
+def saveImage():
+    global image
+    path = filedialog.asksaveasfilename(initialfile = 'Untitled.jpg',filetypes=[("Image File",('.jpg',".png"))])
+    if path == None:
+        return
+    cv2.imwrite(path,image)
 
-buttonOpen = Button(mainWindow,text="Open Images",command=open)
-buttonOpen.pack()
+frame = Frame(mainWindow)
+frame.grid(row=0,column=0,padx=10,pady=5)
+frame.grid_columnconfigure(0, weight = 1)
 
-mainWindow.mainloop() # Start the GUI
+buttonOpen = Button(frame,text="Open Image",command=open,width=15,font="bold 10")
+buttonOpen.grid(row=0,column=0,padx=10,pady=5)
+
+buttonConvert = Button(frame,text="Convert",command=convert,width=15,font="bold 10",fg="GREEN")
+buttonConvert.grid(row=0,column=1,padx=10,pady=5)
+
+buttonSave = Button(frame,text="Save Image",command=saveImage,width=15,font="bold 10")
+buttonSave.grid(row=0,column=2,padx=10,pady=5)
+
+quality = IntVar()
+
+qframe = Frame(frame)
+qframe.grid(row=0,column=3)
+qframe.grid_columnconfigure(0, weight = 1)
+
+qualityScale = Scale(qframe,variable=quality,from_=1,to= 100,orient=HORIZONTAL)
+qualityScale.set(50)
+qualityScale.grid(row=0,column=0,padx=10,pady=5)
+
+Label(qframe, text = "Quality",font="bold 10").grid(row=1,column=0,padx=10,pady=5)
+
+mainWindow.mainloop()
