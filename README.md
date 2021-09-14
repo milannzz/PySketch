@@ -1,4 +1,8 @@
 # Pencil-Sketch-Using-Python
+**Technology Used -**
+1. Python
+2. OpenCV
+3. Tkinter
 
 Samples -
 
