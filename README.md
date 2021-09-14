@@ -2,9 +2,9 @@
 **Technology Used -**
 1. Python
 2. OpenCV
-3. Tkinter
+3. Tkinter 
 
-**How to Use- **
+**How to Use -**
 
 ![]()
 
