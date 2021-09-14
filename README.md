@@ -1,4 +1,4 @@
-# Pencil-Sketch-Using-Python- Convert your images into sketches.
+# Pencil- Convert your images into sketches.
 
 **Technology Used -**
 1. Python
