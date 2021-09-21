@@ -6,12 +6,9 @@
 3. Tkinter 
 
 **How to Use -**
-
-![]()
-
-![]()
-
-![]()
+1. Open Image.
+2. Click Convert.
+3. Save Image.
 
 Samples -
 
