@@ -15,14 +15,14 @@
 
 Samples -
 
-![](https://github.com/milannzz/PySketch/blob/master/output/output1.jpg)
+![](https://github.com/milannzz/PySketch/blob/master/output/output6.jpg)
 
 ![](https://github.com/milannzz/PySketch/blob/master/output/output10.jpg)
 
-![](https://github.com/milannzz/PySketch/blob/master/output/output3.jpg)
+![](https://github.com/milannzz/PySketch/blob/master/output/output7.jpg)
+
+![](https://github.com/milannzz/PySketch/blob/master/output/output9.jpg)
+
+![](https://github.com/milannzz/PySketch/blob/master/output/output8.jpg)
 
 ![](https://github.com/milannzz/PySketch/blob/master/output/output2.jpg)
-
-![](https://github.com/milannzz/PySketch/blob/master/output/output4.jpg)
-
-![](https://github.com/milannzz/PySketch/blob/master/output/output5.jpg)
