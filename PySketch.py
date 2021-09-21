@@ -1,114 +1,117 @@
-import cv2
-from numpy import *
-from tkinter import Label, Frame, Tk, Button, IntVar, Scale, HORIZONTAL, messagebox
+import cv2 as cv
+import tkinter as tk
+import numpy as np
 from tkinter import filedialog
 from PIL import ImageTk,  Image
+from datetime import datetime
 
 # Clearer Ui using ctypes
 import ctypes
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
 
-mainWindow = Tk()
-mainWindow.title("PySketch")
-mainWindow.geometry("1366x768")
-mainWindow.resizable(width = True, height = True)
-mainWindow.grid_columnconfigure(0, weight = 1)
+class pySketchApp(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.fileypes = [("Image File", ('.jpg', ".png", '.jpeg', '.bmp', '.tiff', 'tif', '.pbm'))]
+        self.font = " helvectica 10"
+        self.image_canvas = tk.Label(self)
+        self.draw_ui()
 
-def open_images():
-    global path
-    global image_canvas
-    path=filedialog.askopenfilename(filetypes=[("Image File", ('.jpg', ".png"))])
-    try:
-        orignal_image = cv2.imread(path)
-        image = cv2.resize(orignal_image, (0, 0), fx=(640 / orignal_image.shape[0]), fy=(640 / orignal_image.shape[0]), interpolation=cv2.INTER_AREA)
+    def draw_ui(self):
+        self.title("PySketch")
+        self.minsize(1366, 868)
+        self.resizable(width = True, height = True)
+        self.grid_columnconfigure(0, weight = 1)
 
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        container = tk.Frame(self)
+        container.grid(row=0, column=0, padx=10, pady=5)
+        container.grid_columnconfigure(0, weight = 1)
 
-        photo = ImageTk.PhotoImage(image = Image.fromarray(image))
-        image_canvas.config(image='')
-        image_canvas.config(image=photo)
-        image_canvas.image = photo
-        image_canvas.grid(row=1, column=0)
-    except:
-        pass
+        open_button = tk.Button(container, text="Open Image", command=self.open_images, width=15, font=self.font)
+        open_button.grid(row=0, column=0, padx=10, pady=5, ipady=3)
 
-def convert_images():
-    global path
-    global image
-    global image_canvas
-    try :
-        orignal_image = cv2.imread(path)
-        image = cv2.resize(orignal_image, (0, 0), fx=(640 / orignal_image.shape[0]), fy=(640 / orignal_image.shape[0]))
+        convert_button = tk.Button(container, text="Convert", command=self.convert_images, width=15, font=self.font, fg="GREEN")
+        convert_button.grid(row=0, column=1, padx=10, pady=5, ipady=3)
 
-        grey_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        save_button = tk.Button(container, text="Save Image", command=self.saveImage, width=15, font=self.font)
+        save_button.grid(row=0, column=2, padx=10, pady=5, ipady=3)
+        
+        quality_label = tk.Label(container, text="Quality:", font=self.font)
+        quality_label.grid(row=1, column=0, padx=(0, 10), pady=(5, 5), sticky=tk.SW)
 
-        inverted_image = cv2.bitwise_not(grey_image)
-        blurred_image = cv2.GaussianBlur(inverted_image, (21, 21), 0)
+        self.quality_scale = tk.Scale(container, from_=1, to= 100, orient=tk.HORIZONTAL, length=200)
+        self.quality_scale.set(100)
+        self.quality_scale.grid(row=1, column=0, padx=(80, 10), pady=(5, 5), sticky=tk.W)
 
-        invertedblur = cv2.bitwise_not(blurred_image)
+        gamma_label = tk.Label(container, text="Gamma:", font=self.font)
+        gamma_label.grid(row=1, column=1, padx=(0, 10), pady=(5, 5), sticky=tk.SW)
 
-        image = cv2.divide(grey_image, invertedblur, scale=250)
+        self.gamma_scale = tk.Scale(container, from_=-50, to=50, resolution=0.01,  orient=tk.HORIZONTAL, length=200)
+        self.gamma_scale.set(1)
+        self.gamma_scale.grid(row=1, column=1, padx=(80, 10), pady=(5, 5), sticky=tk.W)
 
-        maxIntensity = 255.0 # depends on dtype of image data
-        x = arange(maxIntensity) 
+        smoothening_label = tk.Label(container, text="Smoothening:", font=self.font)
+        smoothening_label.grid(row=1, column=2, padx=(0, 10), pady=(5, 5), sticky=tk.SW)
 
-        # Parameters for manipulating image data
-        phi = 1
-        theta = 1
+        self.smoothening_scale = tk.Scale(container, from_=1, to= 100,resolution=1,  orient=tk.HORIZONTAL, length=200)
+        self.smoothening_scale.set(27)
+        self.smoothening_scale.grid(row=1, column=2, padx=(120, 10), pady=(5, 5), sticky=tk.W)
 
-        y = (maxIntensity / phi) * (x / (maxIntensity / theta)) ** 0.5
 
-        # Decrease intensity such that dark pixels become much darker,  bright pixels become slightly dark 
-
-        image = (maxIntensity / phi)*(image / (maxIntensity / theta)) ** 1.5
-        image = array(image, dtype=uint8)
-
+    def open_images(self):
+        self.path=filedialog.askopenfilename(filetypes=self.fileypes)
+        try:
+            orignal_image = cv.imread(self.path)
+            image = cv.resize(orignal_image, (0, 0), fx=(720/ orignal_image.shape[0]), fy=(720/ orignal_image.shape[0]), interpolation=cv.INTER_AREA)
+            image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+            photo = ImageTk.PhotoImage(image = Image.fromarray(image))
+            self.image_canvas.config(image='')
+            self.image_canvas.config(image=photo)
+            self.image_canvas.image = photo
+            self.image_canvas.grid(row=1, column=0)
+        except:
+            pass
+    
+    def convert_to_drawing(self, image):
+        self.update()
+        grey_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+        inverted_image = cv.bitwise_not(grey_image)
+        smoothening = int(self.smoothening_scale.get())
+        if smoothening % int(2) == int(0):
+            smoothening = smoothening - 1
+        blurred_image = cv.GaussianBlur(inverted_image, (smoothening, smoothening), 0)
+        inverted_blurred_image = cv.bitwise_not(blurred_image)
+        image = cv.divide(grey_image, inverted_blurred_image, scale=256.0)
+        gamma = self.gamma_scale.get()
+        image = 255 * (image/255) ** gamma
+        image = np.array(image, dtype=np.uint8)
         white = [255, 255, 255]
         dark = [25, 25, 25]
-        image = cv2.copyMakeBorder(image, 5, 5, 5, 5, cv2.BORDER_CONSTANT, value=dark)
+        image = cv.copyMakeBorder(image, 5, 5, 5, 5, cv.BORDER_CONSTANT, value=dark)
+        return image
 
-        image4tk = Image.fromarray(image)
-        image4tk = ImageTk.PhotoImage(image4tk)
+    def convert_images(self):
+        self.update()
+        orignal_image = cv.imread(self.path)
+        fx = self.quality_scale.get() / 100
+        self.orignal_converted_image = cv.resize(orignal_image, (0, 0), fx=fx, fy=fx, interpolation=cv.INTER_AREA)
+        self.orignal_converted_image = self.convert_to_drawing(orignal_image)
+        compressed_fx = (720 / orignal_image.shape[0])
+        if compressed_fx >= fx:
+            compressed_fx = fx
+        compress_converted_image = cv.resize(self.orignal_converted_image, (0, 0), fx=compressed_fx, fy=compressed_fx, interpolation=cv.INTER_AREA)
+        compress_converted_image = Image.fromarray(compress_converted_image)
+        compress_converted_image = ImageTk.PhotoImage(compress_converted_image)
+        self.image_canvas.config(image=compress_converted_image, padx=10, pady=5)
+        self.image_canvas.image = compress_converted_image
+        self.image_canvas.grid(row=1, column=0, padx=10, pady=5)
+        self.update()
+    
+    def saveImage(self):
+        filename = 'IMG-' + str(datetime.now().strftime("%Y%m%d%H%M%S")) + '.jpg'
+        self.path = filedialog.asksaveasfilename(initialfile = filename, filetypes=self.fileypes)
+        cv.imwrite(self.path, self.orignal_converted_image)
 
-        image_canvas.config(image=image4tk, padx=10, pady=5)
-        image_canvas.image = image4tk
-        image_canvas.grid(row=1, column=0, padx=10, pady=5)
-    except:
-        messagebox.showerror("Error", "Please select a image")
-
-def saveImage():
-    global image
-    path = filedialog.asksaveasfilename(initialfile = 'Untitled.jpg', filetypes=[("Image File", ('.jpg', ".png"))])
-    try:
-        cv2.imwrite(path, image)
-    except:
-        messagebox.showerror("Error",  "Save file location not specified.")
-        
-
-frame = Frame(mainWindow)
-frame.grid(row=0, column=0, padx=10, pady=5)
-frame.grid_columnconfigure(0, weight = 1)
-
-open_button = Button(frame, text="Open Image", command=open_images, width=15, font="bold 10")
-open_button.grid(row=0, column=0, padx=10, pady=5)
-
-convert_button = Button(frame, text="Convert", command=convert_images, width=15, font="bold 10", fg="GREEN")
-convert_button.grid(row=0, column=1, padx=10, pady=5)
-
-buttonSave = Button(frame, text="Save Image", command=saveImage, width=15, font="bold 10")
-buttonSave.grid(row=0, column=2, padx=10, pady=5)
-
-quality = IntVar()
-image_canvas = Label(mainWindow)
-
-qframe = Frame(frame)
-qframe.grid(row=0, column=3)
-qframe.grid_columnconfigure(0, weight = 1)
-
-qualityScale = Scale(qframe, variable=quality, from_=1, to= 100, orient=HORIZONTAL)
-qualityScale.set(100)
-qualityScale.grid(row=0, column=0, padx=10, pady=5)
-
-Label(qframe, text="Quality", font="bold 10").grid(row=1, column=0, padx=10, pady=5)
-
-mainWindow.mainloop()
+if __name__ == "__main__":
+    app = pySketchApp()
+    app.mainloop()
